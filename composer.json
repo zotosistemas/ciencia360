@@ -1,0 +1,11 @@
+{
+  "name": "ciencia360/web",
+  "description": "Ciencia360 - Articulos (PHP MVC ligero)",
+  "type": "project",
+  "autoload": {
+    "psr-4": {
+      "Ciencia360\\": "src/"
+    }
+  },
+  "require": {}
+}
