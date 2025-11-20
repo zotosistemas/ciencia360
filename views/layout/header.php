@@ -24,6 +24,7 @@
               <li><a class="dropdown-item" href="articulos.php?tema=espacio-futuro">Espacio y Futuro</a></li>
             </ul>
           </li>
+          <li class="nav-item"><a class="nav-link" href="contacto.php">Contacto</a></li>
           <!-- <li class="nav-item"><a class="nav-link" href="articulos.php?tipo=infografia">Infografías</a></li>
           <li class="nav-item"><a class="nav-link" href="articulos.php?tipo=video">Videos</a></li>
           <li class="nav-item ms-lg-3">

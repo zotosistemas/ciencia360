@@ -11,10 +11,21 @@
         </nav>
 
         <h1 class="mb-2"><?= htmlspecialchars($art['titulo']) ?></h1>
-        <p class="text-muted"><?= date("d M Y", strtotime($art['fecha_publicacion'])) ?> — <?= htmlspecialchars($art['autor'] ?? 'Ciencia360') ?></p>
+        <p class="text-muted">
+          <?= date("d M Y", strtotime($art['fecha_publicacion'])) ?>
+          — <?= htmlspecialchars($art['autor'] ?? 'Ciencia360') ?>
+        </p>
+
+        <?php if (!empty($adTopContent)): ?>
+          <div class="mb-3">
+            <?= $adTopContent ?>
+          </div>
+        <?php endif; ?>
 
         <?php if (!empty($art['imagen'])): ?>
-          <img src="assets/images/<?= htmlspecialchars($art['imagen']) ?>" class="img-fluid rounded mb-4" alt="<?= htmlspecialchars($art['titulo']) ?>">
+          <img src="assets/images/<?= htmlspecialchars($art['imagen']) ?>"
+            class="img-fluid rounded mb-4"
+            alt="<?= htmlspecialchars($art['titulo']) ?>">
         <?php endif; ?>
 
         <?php
@@ -24,15 +35,32 @@
         $contenido = $art['contenido'] ?? '';
         $pCount = Utils::countParagraphs($contenido);
 
-        // Decidir posiciones: siempre 2; si hay >=5 párrafos, también 5
-        $positions = [2];
-        $ads = [$adInArticle];
-        if ($pCount >= 5 && !empty($adInArticle2)) {
+        /**
+         * Inyección de anuncios dentro del contenido
+         * Reglas:
+         * - Después del párrafo 2  → $adInArticle1 (si hay al menos 2 párrafos)
+         * - Después del párrafo 5  → $adInArticle2 (si hay al menos 5 párrafos)
+         * - Después del párrafo 8  → $adInArticle3 (si hay al menos 8 párrafos)
+         */
+        $positions = [];
+        $ads = [];
+
+        if (!empty($adInArticle1) && $pCount >= 2) {
+          $positions[] = 2;
+          $ads[] = $adInArticle1;
+        }
+
+        if (!empty($adInArticle2) && $pCount >= 5) {
           $positions[] = 5;
           $ads[] = $adInArticle2;
         }
 
-        $contenidoRender = (!empty($ads) && !empty($ads[0]))
+        if (!empty($adInArticle3) && $pCount >= 8) {
+          $positions[] = 8;
+          $ads[] = $adInArticle3;
+        }
+
+        $contenidoRender = (!empty($positions) && !empty($ads))
           ? Utils::injectMultiple($contenido, $positions, $ads)
           : $contenido;
         ?>
@@ -53,10 +81,15 @@
               <div class="col-md-4">
                 <div class="card h-100">
                   <a href="articulo.php?slug=<?= urlencode($rel['slug']) ?>" class="ratio ratio-16x9">
-                    <img src="assets/images/<?= htmlspecialchars($rel['imagen'] ?? 'placeholder.jpg') ?>" class="card-img-top" alt="<?= htmlspecialchars($rel['titulo']) ?>">
+                    <img src="assets/images/<?= htmlspecialchars($rel['imagen'] ?? 'placeholder.jpg') ?>"
+                      class="card-img-top"
+                      alt="<?= htmlspecialchars($rel['titulo']) ?>">
                   </a>
                   <div class="card-body">
-                    <a href="articulo.php?slug=<?= urlencode($rel['slug']) ?>" class="stretched-link text-decoration-none"><?= htmlspecialchars($rel['titulo']) ?></a>
+                    <a href="articulo.php?slug=<?= urlencode($rel['slug']) ?>"
+                      class="stretched-link text-decoration-none">
+                      <?= htmlspecialchars($rel['titulo']) ?>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -84,14 +117,6 @@
           </div>
         </div>
 
-        <!-- <div class="card shadow-sm">
-          <div class="card-header bg-white"><strong>Más leídos</strong></div>
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item"><a href="#" class="text-decoration-none">Ejemplo 1</a></li>
-            <li class="list-group-item"><a href="#" class="text-decoration-none">Ejemplo 2</a></li>
-            <li class="list-group-item"><a href="#" class="text-decoration-none">Ejemplo 3</a></li>
-          </ul>
-        </div> -->
         <aside class="card">
           <div class="card-header fw-semibold">Más leídos (30 días)</div>
           <ul class="list-group list-group-flush">
@@ -101,7 +126,9 @@
                   <a href="articulo.php?slug=<?= urlencode($mr['slug']) ?>">
                     <?= htmlspecialchars($mr['titulo']) ?>
                   </a>
-                  <span class="badge rounded-pill text-bg-light"><?= (int)($mr['views'] ?? 0) ?></span>
+                  <span class="badge rounded-pill text-bg-light">
+                    <?= (int)($mr['views'] ?? 0) ?>
+                  </span>
                 </li>
               <?php endforeach; ?>
             <?php else: ?>

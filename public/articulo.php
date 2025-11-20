@@ -64,31 +64,67 @@ if (!$isBot && !$throttleHit) {
 // Ads blocks (usa ADSENSE_CLIENT de .env)
 // =========================
 $adsClient = Config::get('ADSENSE_CLIENT', '');
-$adInArticle = $adInArticle2 = $adSidebar = $adDisplayEnd = '';
+
+/**
+ * BLOQUES:
+ * - $adTopContent   → debajo del título/metadata
+ * - $adInArticle1   → después del párrafo 2
+ * - $adInArticle2   → después del párrafo 5
+ * - $adInArticle3   → después del párrafo 8
+ * - $adSidebar      → sidebar derecho (desktop)
+ * - $adDisplayEnd   → al final del contenido
+ *
+ * IMPORTANTE: Reemplaza data-ad-slot con tus IDs reales de AdSense.
+ */
+$adTopContent = $adInArticle1 = $adInArticle2 = $adInArticle3 = $adSidebar = $adDisplayEnd = '';
 
 if (!empty($adsClient)) {
-  // In-article 1 (después del 2º párrafo)
-  $adInArticle = <<<HTML
+  // Top display (debajo de título/metadata)
+  $adTopContent = <<<HTML
+  <div class="my-3 ad-slot text-center">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="{$adsClient}"
+         data-ad-slot="1111111111"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+  HTML;
+
+  // In-article 1 (después del párrafo 2)
+  $adInArticle1 = <<<HTML
   <div class="my-4 ad-slot text-center">
     <ins class="adsbygoogle"
          style="display:block; text-align:center;"
          data-ad-client="{$adsClient}"
-         data-ad-slot="1234567890"
-         data-adtest="on"
+         data-ad-slot="2222222222"
          data-ad-format="fluid"
          data-ad-layout="in-article"></ins>
     <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
   </div>
   HTML;
 
-  // In-article 2 (después del 5º párrafo)
+  // In-article 2 (después del párrafo 5)
   $adInArticle2 = <<<HTML
   <div class="my-4 ad-slot text-center">
     <ins class="adsbygoogle"
          style="display:block; text-align:center;"
          data-ad-client="{$adsClient}"
-         data-ad-slot="2234567890"
-         data-adtest="on"
+         data-ad-slot="3333333333"
+         data-ad-format="fluid"
+         data-ad-layout="in-article"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+  HTML;
+
+  // In-article 3 (después del párrafo 8)
+  $adInArticle3 = <<<HTML
+  <div class="my-4 ad-slot text-center">
+    <ins class="adsbygoogle"
+         style="display:block; text-align:center;"
+         data-ad-client="{$adsClient}"
+         data-ad-slot="4444444444"
          data-ad-format="fluid"
          data-ad-layout="in-article"></ins>
     <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
@@ -101,22 +137,20 @@ if (!empty($adsClient)) {
     <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="{$adsClient}"
-         data-ad-slot="3234567890"
-         data-adtest="on"
+         data-ad-slot="5555555555"
          data-ad-format="auto"
          data-full-width-responsive="false"></ins>
     <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
   </div>
   HTML;
 
-  // Display al final
+  // Display al final del artículo
   $adDisplayEnd = <<<HTML
   <div class="my-4 ad-slot text-center">
     <ins class="adsbygoogle"
          style="display:block"
          data-ad-client="{$adsClient}"
-         data-ad-slot="0987654321"
-         data-adtest="on"
+         data-ad-slot="6666666666"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
     <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
